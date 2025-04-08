@@ -104,4 +104,6 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## 📧 Contact
 
-Yeheskiel Yunus Tame - [Email](yeheskielyunustame13@gmail.com)
+- 📧 [Email me](mailto:yeheskielyunustame13@gmail.com)
+- 🌐 [see my Portfolio](https://p-597196.lovable.app/)
+- 💼 [DM Via LinkedIn](https://www.linkedin.com/in/yeheskiel)

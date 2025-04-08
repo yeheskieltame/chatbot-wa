@@ -1,59 +1,107 @@
-# Chatbot WA by Yeheskiel Yunus Tame
+# WhatsApp Chatbot by Yeheskiel Yunus Tame
 
-This is a chatbot system built using [Next.js](https://nextjs.org), bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A powerful WhatsApp chatbot built with Next.js that provides automated customer service, order processing, and business automation.
 
-## Overview
+## 🚀 Features
 
-The Chatbot WA system is designed to provide automated responses and interactions for WhatsApp users. It leverages modern web technologies to ensure a seamless and efficient experience. The chatbot can handle various tasks such as answering frequently asked questions, providing information, and assisting users with specific workflows.
+- **AI-Powered Conversations**: Uses OpenAI GPT-4 for natural language processing
+- **Order Management**: Handles complete order workflow from service selection to payment
+- **Customer Data Collection**: Stores and retrieves customer information
+- **Google Sheets Integration**: Syncs data with Google Sheets for order tracking
+- **Xata Database**: Persistent storage for conversations and order states
+- **WhatsApp Integration**: Connects with WhatsApp via API for messaging
+- **Multi-language Support**: Responds in Bahasa Indonesia and English
 
-## Features
+## 💻 Technology Stack
 
-- **Automated Responses**: Quickly respond to user queries with predefined answers.
-- **Customizable Workflows**: Tailor the chatbot's behavior to suit your specific needs.
-- **Real-Time Interaction**: Engage with users in real-time through WhatsApp.
-- **Scalable Architecture**: Built with Next.js for performance and scalability.
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **AI**: OpenAI GPT-4
+- **Database**: Xata (PostgreSQL)
+- **Storage**: Google Sheets API
+- **Messaging**: WhatsApp Business API
+- **Deployment**: Vercel
 
-## Getting Started
+## 🛠️ Installation
 
-To run the chatbot system locally, follow these steps:
+1. Clone the repository:
+```bash
+git clone https://github.com/yeheskieltame/chatbot-wa.git
+cd chatbot-wa
+```
 
-1. Start the development server:
+2. Install dependencies:
+```bash
+npm install
+```
 
-    ```bash
-    npm run dev
-    # or
-    yarn dev
-    # or
-    pnpm dev
-    # or
-    bun dev
-    ```
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-2. Open [http://localhost:3000](http://localhost:3000) in your browser to access the chatbot interface.
+4. Configure required environment variables:
+```
+OPENAI_API_KEY=your_openai_key
+XATA_API_KEY=your_xata_key
+GOOGLE_SHEETS_CREDENTIALS=your_google_credentials
+WHATSAPP_API_KEY=your_whatsapp_key
+```
 
-3. Begin editing the chatbot logic by modifying `app/page.tsx`. The application will auto-update as you make changes.
+5. Run the development server:
+```bash
+npm run dev
+```
 
-## Usage
+## ⚙️ Configuration
 
-1. **Setup**: Configure the chatbot's settings and workflows in the project files.
-2. **Deploy**: Deploy the chatbot to a hosting platform (e.g., Vercel) for production use.
-3. **Integrate with WhatsApp**: Connect the chatbot to your WhatsApp account using a third-party API or service.
-4. **Interact**: Start using the chatbot to communicate with users and handle their queries.
+### Google Sheets Setup
+1. Create a Google Sheet with these tabs:
+   - Profile
+   - LAYANAN (Services)
+   - PORTOFOLIO
+   - TESTIMONI (Testimonials)
+   - SKILLS
+   - SOSIAL MEDIA
+   - FAQ
+   - ORDER
+   - Customers
 
-## Learn More
+2. Enable Google Sheets API and share the sheet with your service account
 
-To learn more about the technologies used in this project, check out the following resources:
+### Xata Database Setup
+1. Create tables in Xata:
+   - conversations (fields: sessionId, messages)
+   - order_states (fields: sessionId, stage, service, customNotes, price, customerData, paymentMethod)
 
-- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - An interactive Next.js tutorial.
+## 📱 Usage
 
-## Deploy on Vercel
+1. Start the chatbot:
+```bash
+npm run dev
+```
 
-The easiest way to deploy your chatbot system is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme). Vercel provides a fast and reliable hosting solution for Next.js applications.
+2. Connect to WhatsApp:
+- Use a WhatsApp Business API provider
+- Set the webhook URL to your deployed endpoint
 
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Chatbot Commands:
+- "Order" - Start a new service order
+- "Help" - Get assistance
+- "Status" - Check order status
 
-## License
+## 📸 Screenshots
+
+(Add screenshots of the chatbot in action here)
+
+## 📄 License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## 📧 Contact
+
+Yeheskiel Yunus Tame - [Email](yeheskielyunustame13@gmail.com)

@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@xata.io/client": "^0.30.1",
     "googleapis": "^148.0.0",
     "next": "15.2.4",
     "openai": "^4.92.1",

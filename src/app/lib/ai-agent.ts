@@ -1,36 +1,29 @@
 import OpenAI from 'openai';
 import { getSheetData, updateOrder, getCustomer, updateCustomer } from './sheets';
 import { sendWhatsAppMessage } from './whatsapp';
+import { xata } from './xata';
+import type { Conversation, OrderState } from './xata';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Memory store for conversation context
-const memoryStore = new Map<string, any[]>();
-
-// Order flow state tracking
-const orderStateStore = new Map<string, {
-  stage: string;
-  service?: string;
-  customNotes?: string;
-  price?: number;
-  customerData?: {
-    name: string;
-    email: string;
-    phone: string;
-    isNew: boolean;
-  };
-  paymentMethod?: string;
-}>();
-
 export async function processChatMessage(message: string, sessionId: string, phoneNumber: string) {
   try {
-    // Get conversation context
-    const context = memoryStore.get(sessionId) || [];
+    // Get conversation context from Xata
+    const conversation = await xata.db.conversations.filter({ sessionId }).getFirst();
+    const context = conversation?.messages || [];
     
-    // Get current order state if exists
-    const orderState = orderStateStore.get(sessionId) || { stage: '' };
+    // Get current order state from Xata
+    const orderStateRecord = await xata.db.order_states.filter({ sessionId }).getFirst();
+    const orderState = orderStateRecord ? {
+      stage: orderStateRecord.stage,
+      service: orderStateRecord.service || undefined,
+      customNotes: orderStateRecord.customNotes || undefined,
+      price: orderStateRecord.price || undefined,
+      customerData: orderStateRecord.customerData || undefined,
+      paymentMethod: orderStateRecord.paymentMethod || undefined
+    } : { stage: '' };
 
     // Get all relevant data from Google Sheets
     const [profile, services, portfolio, testimonials, skills, socialMedia, faq, orders, customers] = await Promise.all([
@@ -76,15 +69,17 @@ export async function processChatMessage(message: string, sessionId: string, pho
     const newOrderState = detectOrderFlow(message, response, orderState);
     if (newOrderState.stage !== orderState.stage) {
       await handleOrderFlow(message, response, sessionId, phoneNumber, newOrderState);
-      orderStateStore.set(sessionId, newOrderState);
+      await xata.db.order_states.createOrUpdate(sessionId, newOrderState);
     }
 
-    // Update context
-    memoryStore.set(sessionId, [
-      ...context,
-      { role: "user", content: message },
-      { role: "assistant", content: response }
-    ]);
+    // Update context in Xata
+    await xata.db.conversations.createOrUpdate(sessionId, {
+      messages: [
+        ...context,
+        { role: "user", content: message },
+        { role: "assistant", content: response }
+      ]
+    });
 
     return response;
   } catch (error) {
@@ -299,17 +294,15 @@ async function handleCustomerData(phoneNumber: string, sessionId: string) {
     const response = `👋 Konfirmasi data Anda:\nNama: ${customer.name}\nEmail: ${customer.email}\n\nApa data masih benar? (Ya/Tidak)`;
     await sendWhatsAppMessage(phoneNumber, response);
     
-    // Update order state
-    const orderState = orderStateStore.get(sessionId);
-    if (orderState) {
-      orderState.customerData = {
+    // Update order state in Xata
+    await xata.db.order_states.createOrUpdate(sessionId, {
+      customerData: {
         name: customer.name,
         email: customer.email,
         phone: phoneNumber,
         isNew: false
-      };
-      orderStateStore.set(sessionId, orderState);
-    }
+      }
+    });
   } else {
     const response = `📋 Kami membutuhkan beberapa data untuk melanjutkan:\n1. Nama lengkap\n2. Email\n\nSilakan kirim dalam format:\nNama: [nama Anda]\nEmail: [email Anda]`;
     await sendWhatsAppMessage(phoneNumber, response);
